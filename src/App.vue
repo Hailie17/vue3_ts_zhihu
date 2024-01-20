@@ -18,6 +18,24 @@ const testData: ColumnProps[] = [
   {
     id: 2,
     title: 'test2的专栏',
+    description: '这是的test2专栏，有一段非常有意思的简介，可以更新一下欧'
+    // avatar: 'https://zh-hans.react.dev/images/home/community/react_conf_hallway.webp'
+  },
+  {
+    id: 2,
+    title: 'test2的专栏',
+    description: '这是的test2专栏，有一段非常有意思的简介，可以更新一下欧',
+    avatar: 'https://zh-hans.react.dev/images/home/community/react_conf_hallway.webp'
+  },
+  {
+    id: 2,
+    title: 'test2的专栏',
+    description: '这是的test2专栏，有一段非常有意思的简介，可以更新一下欧',
+    avatar: 'https://zh-hans.react.dev/images/home/community/react_conf_hallway.webp'
+  },
+  {
+    id: 2,
+    title: 'test2的专栏',
     description: '这是的test2专栏，有一段非常有意思的简介，可以更新一下欧',
     avatar: 'https://zh-hans.react.dev/images/home/community/react_conf_hallway.webp'
   }
