@@ -1,6 +1,6 @@
 <template>
   <div class="validata-input-container pb-3">
-    <input type="text" :class="{'is-invalid' : inputRef.error}" class="form-control" :value="inputRef.val" @blur="validateInput" @input="updateValue">
+    <input :class="{'is-invalid' : inputRef.error}" class="form-control" :value="inputRef.val" @blur="validateInput" @input="updateValue" v-bind="$attrs">
     <span v-if="inputRef.error" class="invalid-feedback">{{ inputRef.message }}</span>
   </div>
 </template>
@@ -18,6 +18,7 @@ export default defineComponent({
   props: {
     rules: Array as PropType<RulesProp>
   },
+  inheritAttrs: false, // 禁止根元素继承
   setup (props, context) {
     const inputRef = reactive({
       val: '',
