@@ -20,7 +20,6 @@
 <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import ColumnList, { ColumnProps } from './components/ColumnList.vue'
 import GlobalHeader, { UserProps } from './components/GlobalHeader.vue'
 import ValidateInput, { RulesProp } from './components/ValidateInput.vue'
 import ValidateForm from './components/ValidateForm.vue'
@@ -29,38 +28,6 @@ const currentUser: UserProps = {
   name: 'viking'
 }
 const emailReg = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
-const testData: ColumnProps[] = [
-  {
-    id: 1,
-    title: 'test1的专栏',
-    description: '这是的test1专栏，有一段非常有意思的简介，可以更新一下欧',
-    avatar: 'https://zh-hans.react.dev/images/home/community/react_conf_hallway.webp'
-  },
-  {
-    id: 2,
-    title: 'test2的专栏',
-    description: '这是的test2专栏，有一段非常有意思的简介，可以更新一下欧'
-    // avatar: 'https://zh-hans.react.dev/images/home/community/react_conf_hallway.webp'
-  },
-  {
-    id: 2,
-    title: 'test2的专栏',
-    description: '这是的test2专栏，有一段非常有意思的简介，可以更新一下欧',
-    avatar: 'https://zh-hans.react.dev/images/home/community/react_conf_hallway.webp'
-  },
-  {
-    id: 2,
-    title: 'test2的专栏',
-    description: '这是的test2专栏，有一段非常有意思的简介，可以更新一下欧',
-    avatar: 'https://zh-hans.react.dev/images/home/community/react_conf_hallway.webp'
-  },
-  {
-    id: 2,
-    title: 'test2的专栏',
-    description: '这是的test2专栏，有一段非常有意思的简介，可以更新一下欧',
-    avatar: 'https://zh-hans.react.dev/images/home/community/react_conf_hallway.webp'
-  }
-]
 export default defineComponent({
   name: 'App',
   components: {
