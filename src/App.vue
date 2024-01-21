@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <global-header :user="currentUser"></global-header>
-    <form>
+    <validate-form>
       <div class="mb-3">
         <label class="form-label">邮箱地址</label>
         <validate-input :rules="emailRules" v-model="emailVal" placeholder="请输入邮箱地址" type="text"></validate-input>
@@ -10,7 +10,10 @@
         <label for="exampleInputPassword1" class="form-label">密码</label>
         <validate-input :rules="passwordRules" v-model="passwordVal" placeholder="请输入密码" type="password"></validate-input>
       </div>
-    </form>
+      <template #submit>
+        <span class="btn btn-danger">submit</span>
+      </template>
+    </validate-form>
   </div>
 </template>
 
@@ -20,6 +23,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import ColumnList, { ColumnProps } from './components/ColumnList.vue'
 import GlobalHeader, { UserProps } from './components/GlobalHeader.vue'
 import ValidateInput, { RulesProp } from './components/ValidateInput.vue'
+import ValidateForm from './components/ValidateForm.vue'
 const currentUser: UserProps = {
   isLogin: true,
   name: 'viking'
@@ -61,7 +65,8 @@ export default defineComponent({
   name: 'App',
   components: {
     GlobalHeader,
-    ValidateInput
+    ValidateInput,
+    ValidateForm
   },
   setup () {
     const emailVal = ref('')
