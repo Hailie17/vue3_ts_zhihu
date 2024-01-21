@@ -14,9 +14,11 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "webpack-env"
+      "webpack-env",
+      "node"
     ],
     "paths": {
+      "tslib" : ["path/to/node_modules/tslib/tslib.d.ts"],
       "@/*": [
         "src/*"
       ]
