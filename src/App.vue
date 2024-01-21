@@ -63,7 +63,6 @@ export default defineComponent({
       }
     }
     return {
-      list: testData,
       currentUser,
       emailRef,
       passwordVal,
