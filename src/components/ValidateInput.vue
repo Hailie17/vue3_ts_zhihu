@@ -1,12 +1,12 @@
 <template>
   <div class="validata-input-container pb-3">
-    <input type="text" :class="{'is-invalid' : inputRef.error}" class="form-control" v-model="inputRef.val" @blur="validateInput">
+    <input type="text" :class="{'is-invalid' : inputRef.error}" class="form-control" :value="inputRef.val" @blur="validateInput" @input="updateValue">
     <span v-if="inputRef.error" class="invalid-feedback">{{ inputRef.message }}</span>
   </div>
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, mergeProps, reactive } from 'vue'
+import { PropType, defineComponent, reactive } from 'vue'
 
 const emailReg = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
 interface RuleProp {
@@ -18,12 +18,17 @@ export default defineComponent({
   props: {
     rules: Array as PropType<RulesProp>
   },
-  setup (props) {
+  setup (props, context) {
     const inputRef = reactive({
       val: '',
       error: false,
       message: ''
     })
+    const updateValue = (e: Event) => {
+      const targetValue = (e.target as HTMLInputElement).value
+      inputRef.val = targetValue
+      context.emit('update:modalValue', targetValue)
+    }
     const validateInput = () => {
       if (props.rules) {
         const allPassed = props.rules.every(rule => {
@@ -46,7 +51,8 @@ export default defineComponent({
     }
     return {
       inputRef,
-      validateInput
+      validateInput,
+      updateValue
     }
   }
 })
