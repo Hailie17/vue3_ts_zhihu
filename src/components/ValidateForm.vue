@@ -26,7 +26,7 @@ export default defineComponent({
     }
     const callback = (func?: ValidateFunc) => {
       if (func) {
-        funcArr.push(func)
+        funcArr.push(func) // 将监听得到的验证函数都存到一个数组中
       }
     }
     emitter.on('form-item-created', callback)

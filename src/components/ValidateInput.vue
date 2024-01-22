@@ -53,8 +53,8 @@ export default defineComponent({
       }
       return true
     }
-    onMounted(() => {
-      emitter.emit('form-item-created', inputRef.val)
+    onMounted(() => { // 将事件发射出去，其实就是把验证函数发射出去
+      emitter.emit('form-item-created', validateInput)
     })
     return {
       inputRef,
