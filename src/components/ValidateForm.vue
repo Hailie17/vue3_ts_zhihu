@@ -19,7 +19,7 @@ export const emitter = mitt<Events>()// 实例化 mitt 的时候，作为泛型�
 export default defineComponent({
   emits: ['form-submit'],
   setup (props, context) {
-    let funcArr: ValidateFunc[] = []
+    let funcArr: ValidateFunc[] = [] // 存放一组函数，执行以后可以显示错误的信息，并且返回input是否通过
     const submitForm = () => {
       const result = funcArr.map(func => func()).every(result => result)
       context.emit('form-submit', result)
