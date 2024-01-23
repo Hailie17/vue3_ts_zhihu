@@ -14,18 +14,18 @@ interface ImageProps {
 }
 export interface ColumnProps {
   _id: string;
-  id: number;
   title: string;
   avatar?: ImageProps;
   description: string;
 }
-interface PostProps {
-  id: number;
+export interface PostProps {
+  _id: string;
   title: string;
-  content: string;
-  image?: string;
+  excerpt?: string;
+  content?: string;
+  image?: ImageProps;
   createdAt: string;
-  columnId: number;
+  column: string;
 }
 interface ListProps<P> {
   [id: string]: P;
@@ -51,6 +51,12 @@ const store = createStore<GlobalDataProps>({
     },
     fetchColumns (state, rowData) {
       state.columns = rowData.data.list
+    },
+    fetchColumn (state, rowData) {
+      state.columns = [rowData.data]
+    },
+    fetchPosts (state, rowData) {
+      state.posts = rowData.data.list
     }
   },
   actions: {
@@ -58,17 +64,24 @@ const store = createStore<GlobalDataProps>({
       axios.get('/columns').then(res => {
         context.commit('fetchColumns', res.data)
       })
+    },
+    fetchColumn ({ commit }, cid) { // context 具有和 store 相同的方法和属性
+      axios.get(`/columns/${cid}`).then(res => {
+        commit('fetchColumn', res.data)
+      })
+    },
+    fetchPosts ({ commit }, cid) { // context 具有和 store 相同的方法和属性
+      axios.get(`/columns/${cid}/posts`).then(res => {
+        commit('fetchPosts', res.data)
+      })
     }
   },
   getters: {
-    biggerColumnsLen (state) {
-      return state.columns.filter(c => c.id > 2).length
+    getColumnById: (state) => (id: string) => {
+      return state.columns.find(c => c._id === id)
     },
-    getColumnById: (state) => (id: number) => {
-      return state.columns.find(c => c.id === id)
-    },
-    getPostsByCid: (state) => (cid: number) => {
-      return state.posts.filter(post => post.columnId === cid)
+    getPostsByCid: (state) => (cid: string) => {
+      return state.posts.filter(post => post.column === cid)
     }
   }
 })
