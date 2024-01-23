@@ -4,9 +4,8 @@ import store from './store'
 import App from './App.vue'
 import axios from 'axios'
 
-axios.get('http://api.vikingship.xyz/api/columns').then((res) => {
-  console.log(res)
-})
+axios.defaults.baseURL = 'http://api.vikingship.xyz/api/'
+
 const app = createApp(App)
 app.use(router)
 app.use(store)
