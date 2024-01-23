@@ -31,11 +31,12 @@ interface ListProps<P> {
   [id: string]: P;
 }
 export interface GlobalDataProps {
+  loading: boolean;
   columns: ColumnProps[];
   posts: PostProps[];
   user: UserProps;
 }
-
+// 封装请求函数
 const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
   const { data } = await axios.get(url)
   commit(mutationName, data)
@@ -43,6 +44,7 @@ const getAndCommit = async (url: string, mutationName: string, commit: Commit) =
 
 const store = createStore<GlobalDataProps>({
   state: {
+    loading: false,
     columns: [],
     posts: [],
     user: { isLogin: true, name: 'viking', columnId: 1 }
@@ -62,6 +64,9 @@ const store = createStore<GlobalDataProps>({
     },
     fetchPosts (state, rowData) {
       state.posts = rowData.data.list
+    },
+    setLoading (state, status) {
+      state.loading = status
     }
   },
   actions: {
