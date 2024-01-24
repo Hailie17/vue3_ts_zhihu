@@ -7,6 +7,7 @@ import axios from 'axios'
 axios.defaults.baseURL = 'http://api.vikingship.xyz/api/'
 axios.interceptors.request.use(config => {
   store.commit('setLoading', true)
+  store.commit('setError', { status: false, message: '' })
   return config
 })
 axios.interceptors.response.use(config => {
@@ -21,4 +22,4 @@ axios.interceptors.response.use(config => {
 const app = createApp(App)
 app.use(router)
 app.use(store)
-app.mount('#app')
+app.mount('#app') // 挂载到节点上
