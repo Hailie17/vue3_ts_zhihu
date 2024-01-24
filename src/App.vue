@@ -2,7 +2,7 @@
   <div class="container">
     <global-header :user="currentUser"></global-header>
     <router-view></router-view>
-    <loader text="拼命加载中" background="rgba(0,0,0,0.8)" />
+    <loader v-if="isLoading" />
     <footer class="text-center py-4 text-secondary bg-light mt-6">
       <small>
         <ul class="list-inline mb-0">
