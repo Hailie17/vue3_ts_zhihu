@@ -49,7 +49,7 @@ export default defineComponent({
           password: passwordVal.value
         }
         console.log(emailVal, passwordVal)
-        store.dispatch('login', payload).then(() => {
+        store.dispatch('loginAndFetch', payload).then(() => {
           router.push('/')
         })
       }

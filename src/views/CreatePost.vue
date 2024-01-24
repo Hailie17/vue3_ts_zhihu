@@ -21,8 +21,7 @@
 import { defineComponent, ref } from 'vue'
 import ValidateForm from '@/components/ValidateForm.vue'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
-import { GlobalDataProps } from '@/store'
-import { PostProps } from '@/testData'
+import { GlobalDataProps, PostProps } from '@/store'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
@@ -42,17 +41,17 @@ export default defineComponent({
     ]
     const onFormSubmit = (result: boolean) => {
       if (result) {
-        const { columnId } = store.state.user
-        if (columnId) {
+        const { column } = store.state.user
+        if (column) {
           const newPost: PostProps = {
-            id: new Date().getTime(),
+            _id: (new Date().getTime()).toString(),
             title: titleVal.value,
             content: contentVal.value,
-            columnId,
+            column,
             createdAt: new Date().toLocaleDateString()
           }
           store.commit('createPost', newPost)
-          router.push({ name: 'column', params: { id: columnId } })
+          router.push({ name: 'column', params: { id: column } })
         }
       }
     }
