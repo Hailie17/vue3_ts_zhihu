@@ -3,6 +3,7 @@
     <global-header :user="currentUser"></global-header>
     <router-view></router-view>
     <loader v-if="isLoading" />
+    <message type="error" :message="error.message" v-if="error.status" />
     <footer class="text-center py-4 text-secondary bg-light mt-6">
       <small>
         <ul class="list-inline mb-0">
@@ -22,6 +23,7 @@ import { computed, defineComponent, onMounted } from 'vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import GlobalHeader from './components/GlobalHeader.vue'
 import Loader from './components/Loader.vue'
+import Message from './components/Message.vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from './store'
 import axios from 'axios'
@@ -30,13 +32,15 @@ export default defineComponent({
   name: 'App',
   components: {
     GlobalHeader,
-    Loader
+    Loader,
+    Message
   },
   setup () {
     const store = useStore<GlobalDataProps>()
     const isLoading = computed(() => store.state.loading)
     const currentUser = computed(() => store.state.user)
     const token = computed(() => store.state.token)
+    const error = computed(() => store.state.error)
     onMounted(() => {
       if (!currentUser.value.isLogin && token.value) {
         axios.defaults.headers.common.Authorization = `Bearer ${token.value}`
@@ -45,7 +49,8 @@ export default defineComponent({
     })
     return {
       currentUser,
-      isLoading
+      isLoading,
+      error
     }
   }
 })
