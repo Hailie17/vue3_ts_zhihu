@@ -31,6 +31,7 @@ interface ListProps<P> {
   [id: string]: P;
 }
 export interface GlobalDataProps {
+  token: string;
   loading: boolean;
   columns: ColumnProps[];
   posts: PostProps[];
@@ -41,46 +42,55 @@ const getAndCommit = async (url: string, mutationName: string, commit: Commit) =
   const { data } = await axios.get(url)
   commit(mutationName, data)
 }
+const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
+  const { data } = await axios.post(url, payload)
+  commit(mutationName, data)
+  return data
+}
 
 const store = createStore<GlobalDataProps>({
   state: {
+    token: '',
     loading: false,
     columns: [],
     posts: [],
-    user: { isLogin: true, name: 'viking', columnId: 1 }
+    user: { isLogin: false, name: 'viking', columnId: 1 }
   },
-  mutations: {
-    login (state) {
-      state.user = { ...state.user, isLogin: true, name: 'viking' }
-    },
+  mutations: { // 同步
     createPost (state, newPost) {
       state.posts.push(newPost)
     },
-    fetchColumns (state, rowData) {
-      state.columns = rowData.data.list
+    fetchColumns (state, rawData) {
+      state.columns = rawData.data.list
     },
-    fetchColumn (state, rowData) {
-      state.columns = [rowData.data]
+    fetchColumn (state, rawData) {
+      state.columns = [rawData.data]
     },
-    fetchPosts (state, rowData) {
-      state.posts = rowData.data.list
+    fetchPosts (state, rawData) {
+      state.posts = rawData.data.list
     },
     setLoading (state, status) {
       state.loading = status
+    },
+    login (state, rawData) {
+      state.token = rawData.data.token
     }
   },
-  actions: {
+  actions: { // 异步
     fetchColumns ({ commit }) { // context 具有和 store 相同的方法和属性
       getAndCommit('/columns', 'fetchColumns', commit)
     },
-    async fetchColumn ({ commit }, cid) {
+    fetchColumn ({ commit }, cid) {
       getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
     },
-    async fetchPosts ({ commit }, cid) {
+    fetchPosts ({ commit }, cid) {
       getAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit)
+    },
+    login ({ commit }, payload) {
+      return postAndCommit('/user/login', 'login', commit, payload)
     }
   },
-  getters: {
+  getters: { // 对存储在 state 中的数据进行处理或计算
     getColumnById: (state) => (id: string) => {
       return state.columns.find(c => c._id === id)
     },

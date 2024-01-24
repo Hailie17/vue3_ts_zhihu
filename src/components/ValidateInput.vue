@@ -1,7 +1,7 @@
 <template>
   <div class="validata-input-container pb-3">
-    <input v-if="tag !== 'textarea'" :class="{'is-invalid' : inputRef.error}" class="form-control" :value="inputRef.val" @blur="validateInput" @input="updateValue" v-bind="$attrs">
-    <textarea v-else :class="{'is-invalid' : inputRef.error}" class="form-control" :value="inputRef.val" @blur="validateInput" @input="updateValue" v-bind="$attrs"></textarea>
+    <input v-if="tag !== 'textarea'" :class="{'is-invalid' : inputRef.error}" class="form-control" v-model="inputRef.val" @blur="validateInput" @input="updateValue" v-bind="$attrs">
+    <textarea v-else :class="{'is-invalid' : inputRef.error}" class="form-control" v-model="inputRef.val" @blur="validateInput" @input="updateValue" v-bind="$attrs"></textarea>
     <span v-if="inputRef.error" class="invalid-feedback">{{ inputRef.message }}</span>
   </div>
 </template>

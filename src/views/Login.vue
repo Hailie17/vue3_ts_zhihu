@@ -44,8 +44,14 @@ export default defineComponent({
     ]
     const onFormSubmit = (result: boolean) => {
       if (result) {
-        router.push('/')
-        store.commit('login')
+        const payload = {
+          email: emailVal.value,
+          password: passwordVal.value
+        }
+        console.log(emailVal, passwordVal)
+        store.dispatch('login', payload).then(() => {
+          router.push('/')
+        })
       }
     }
     return {
