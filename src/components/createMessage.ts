@@ -2,7 +2,7 @@ import { h, render } from 'vue'
 import Message from './Message.vue'
 export type MessageType = 'success' | 'error' | 'default'
 
-const createMessage = (message: string, type: MessageType, timeout = 2000) => {
+const createMessage = (message: string, type: MessageType, timeout?:number) => {
   const messageVnode = h(Message, {
     message,
     type
@@ -10,10 +10,18 @@ const createMessage = (message: string, type: MessageType, timeout = 2000) => {
   const mountNode = document.createElement('div')
   document.body.appendChild(mountNode)
   render(messageVnode, mountNode) // 挂载节点
-  setTimeout(() => {
+  const destory = () => {
     render(null, mountNode) // 卸载节点
     document.body.removeChild(mountNode)
-  }, timeout)
+  }
+  if (timeout) {
+    setTimeout(() => {
+      destory()
+    }, timeout)
+  }
+  return {
+    destory
+  }
 }
 
 export default createMessage
