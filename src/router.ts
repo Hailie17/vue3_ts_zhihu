@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import axios from 'axios'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import ColumnDetail from './views/ColumnDetail.vue'
@@ -53,13 +54,35 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requireLogin && !store.state.user.isLogin) {
-    console.log(store.state.user.isLogin, 11)
-    next({ name: 'login' })
-  } else if (to.meta.redirectAlreadyLogin) {
-    next('/')
+  const { user, token } = store.state
+  const { requiredLogin, redirectAlreadyLogin } = to.meta
+  if (!user.isLogin) {
+    if (token) {
+      axios.defaults.headers.common.Authorization = `Bearer ${token}` // 请求头添加token
+      store.dispatch('fetchCurrentUser').then(() => {
+        if (redirectAlreadyLogin) {
+          next('/')
+        } else {
+          next()
+        }
+      }).catch(e => {
+        console.error(e)
+        localStorage.removeItem('token')
+        next('login')
+      })
+    } else {
+      if (requiredLogin) { // 需要登录
+        next('login')
+      } else {
+        next()
+      }
+    }
   } else {
-    next()
+    if (redirectAlreadyLogin) { // 已登录，重定向到首页
+      next('/')
+    } else {
+      next()
+    }
   }
 })
 
