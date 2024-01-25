@@ -19,7 +19,7 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login,
-      meta: { redirectAlreadyLogin: false }
+      meta: { redirectAlreadyLogin: true }
     },
     {
       path: '/column/:id',
@@ -29,19 +29,32 @@ const router = createRouter({
     {
       path: '/create',
       name: 'create',
-      component: CreatePost,
-      meta: { requireLogin: true }
+      component: CreatePost
+      // meta: { requireLogin: true }
     },
+    {
+      path: '/create',
+      name: 'create',
+      component: CreatePost,
+      meta: { requiredLogin: true }
+    },
+    // {
+    //   path: '/posts/:id',
+    //   name: 'post',
+    //   component: PostDetail
+    // },
     {
       path: '/signup',
       name: 'signup',
-      component: Signup
+      component: Signup,
+      meta: { redirectAlreadyLogin: true }
     }
   ]
 })
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requireLogin && !store.state.user.isLogin) {
+    console.log(store.state.user.isLogin, 11)
     next({ name: 'login' })
   } else if (to.meta.redirectAlreadyLogin) {
     next('/')

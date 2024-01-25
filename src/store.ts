@@ -20,12 +20,10 @@ export interface ColumnProps {
   description: string;
 }
 export interface PostProps {
-  _id: string;
   title: string;
   excerpt?: string;
   content?: string;
   image?: ImageProps;
-  createdAt: string;
   column: string;
 }
 interface ListProps<P> {
@@ -84,6 +82,7 @@ const store = createStore<GlobalDataProps>({
     },
     fetchCurrentUser (state, rawData) {
       state.user = { isLogin: true, ...rawData.data }
+      console.log(state.user)
     },
     login (state, rawData) {
       const { token } = rawData.data
