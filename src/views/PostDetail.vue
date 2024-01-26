@@ -10,13 +10,17 @@
         <span class="text-muted col text-right font-italic">发表于： {{ currentPost.createdAt }}</span>
       </div>
       <div v-html="currentHTML"></div>
+      <div v-if="showEditErea" class="btn-group mt-5">
+        <button type="button" class="btn btn-success">编辑</button>
+        <button type="button" class="btn btn-danger">删除</button>
+      </div>
     </article>
   </div>
 </template>
 
 <script lang="ts">
 import UserProfile from '@/components/UserProfile.vue'
-import { GlobalDataProps, ImageProps } from '@/store'
+import { GlobalDataProps, ImageProps, UserProps } from '@/store'
 import { computed, defineComponent, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
@@ -40,6 +44,15 @@ export default defineComponent({
         return ''
       }
     })
+    const showEditErea = computed(() => { // 是否显示编辑区
+      const { isLogin, _id } = store.state.user
+      if (currentPost.value && currentPost.value.author && isLogin) { // 判断是否有文章且为登录状态
+        const postAuthor = currentPost.value.author as UserProps
+        return postAuthor._id === _id // 文章作者为登录者
+      } else {
+        return false // 不符合这些条件返回false
+      }
+    })
     const currentImageUrl = computed(() => {
       if (currentPost.value && currentPost.value.image) {
         const { image } = currentPost.value
@@ -51,7 +64,8 @@ export default defineComponent({
     return {
       currentPost,
       currentImageUrl,
-      currentHTML
+      currentHTML,
+      showEditErea
     }
   }
 })

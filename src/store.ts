@@ -26,12 +26,14 @@ export interface ColumnProps {
   description: string;
 }
 export interface PostProps {
+  _id?: string;
   title: string;
   excerpt?: string;
   content?: string;
   image?: ImageProps | string;
+  createdAt: string;
   column: string;
-  author?: string;
+  author?: string | UserProps;
 }
 interface ListProps<P> {
   [id: string]: P;
