@@ -11,7 +11,7 @@
       </div>
       <div v-html="currentHTML"></div>
       <div v-if="showEditErea" class="btn-group mt-5">
-        <button type="button" class="btn btn-success">编辑</button>
+        <router-link :to="{ name: 'create', query: { id: currentPost._id }}" type="button" class="btn btn-success">编辑</router-link>
         <button type="button" class="btn btn-danger">删除</button>
       </div>
     </article>
