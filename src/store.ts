@@ -9,7 +9,7 @@ export interface ResponseType<P =Record<string, never>> {
 export interface UserProps {
   isLogin: boolean;
   nickName?: string;
-  _id?: number;
+  _id?: string;
   column?: string;
   email?: string;
 }
@@ -28,8 +28,9 @@ export interface PostProps {
   title: string;
   excerpt?: string;
   content?: string;
-  image?: ImageProps;
+  image?: ImageProps | string;
   column: string;
+  author?: string;
 }
 interface ListProps<P> {
   [id: string]: P;
@@ -97,9 +98,9 @@ const store = createStore<GlobalDataProps>({
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
     },
     logout (state) {
-      state.token = ''
-      localStorage.removeItem('token')
-      delete axios.defaults.headers.common.Authorization
+      state.token = '' // 清空token
+      localStorage.removeItem('token') // 删除本地缓存token
+      delete axios.defaults.headers.common.Authorization // 删除请求头
     }
   },
   actions: { // 异步
@@ -117,6 +118,9 @@ const store = createStore<GlobalDataProps>({
     },
     login ({ commit }, payload) {
       return postAndCommit('/user/login', 'login', commit, payload)
+    },
+    createPost ({ commit }, payload) {
+      return postAndCommit('/post', 'createPost', commit, payload)
     },
     loginAndFetch ({ dispatch }, loginData) {
       return dispatch('login', loginData).then(() => {
