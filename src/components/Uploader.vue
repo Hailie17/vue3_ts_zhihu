@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, ref } from 'vue'
+import { PropType, defineComponent, ref, watch } from 'vue'
 import axios from 'axios'
 type UploadStatus = 'ready' | 'loading' | 'success' | 'error'
 type CheckFunction = (file: File) => boolean;
@@ -28,14 +28,21 @@ export default defineComponent({
     },
     beforeUpload: {
       type: Function as PropType<CheckFunction>
+    },
+    uploaded: {
+      type: Object
     }
   },
   inheritAttrs: false, // 不要从父组件继承attrs到根组件
   emits: ['file-uploaded', 'file-uploaded-error'],
   setup (props, context) {
     const fileInput = ref<null | HTMLInputElement>(null)
-    const fileStatus = ref<UploadStatus>('ready')
-    const uploadedData = ref()
+    const fileStatus = ref<UploadStatus>(props.uploaded ? 'success' : 'ready') // props.uploaded 存在就是上传成功，否则就是ready的初始状态
+    const uploadedData = ref(props.uploaded)
+    watch(() => props.uploaded, (newValue) => {
+      fileStatus.value = 'success'
+      uploadedData.value = newValue
+    })
     const triggerUpload = () => {
       if (fileInput.value) {
         fileInput.value.click()

@@ -1,7 +1,7 @@
 <template>
   <div class="create-post-page">
     <h4>新建文章</h4>
-    <uploader action="/upload" :before-upload="uploadCheck" @file-uploaded="handleFileUploaded" class="d-flex align-items-center justify-content-center bg-light text-secondary w-100 my-4">
+    <uploader action="/upload" :before-upload="uploadCheck" @file-uploaded="handleFileUploaded" @uploaded="uploadedData" class="d-flex align-items-center justify-content-center bg-light text-secondary w-100 my-4">
       <h2>点击上传头图</h2>
       <template #loading>
         <div class="d-flex">
@@ -32,13 +32,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import ValidateForm from '@/components/ValidateForm.vue'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import Uploader from '@/components/Uploader.vue'
 import { GlobalDataProps, PostProps, ResponseType, ImageProps } from '@/store'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import { beforeUploadCheck } from '../helper'
 import createMessage from '../components/createMessage'
@@ -47,9 +47,12 @@ export default defineComponent({
   name: 'Login',
   components: { ValidateInput, ValidateForm, Uploader },
   setup () {
+    const uploadedData = ref()
     const titleVal = ref('')
     const store = useStore<GlobalDataProps>()
     const router = useRouter()
+    const route = useRoute() // useRoute()拿到和url相关的参数
+    const isEditMode = !!route.query.id // !!转换为boolean
     let imageId = ''
     const titleRules: RulesProp = [
       { type: 'required', message: '文章标题不能为空' }
@@ -58,6 +61,18 @@ export default defineComponent({
     const contentRules: RulesProp = [
       { type: 'required', message: '文章详情不能为空' }
     ]
+    onMounted(() => {
+      if (isEditMode) {
+        store.dispatch('fetchPost', route.query.id).then((rawData: ResponseType<PostProps>) => {
+          const currentPost = rawData.data
+          if (currentPost.image) {
+            uploadedData.value = { data: currentPost.image }
+          }
+          titleVal.value = currentPost.title
+          contentVal.value = currentPost.content || ''
+        })
+      }
+    })
     const handleFileUploaded = (rawData: ResponseType<ImageProps>) => {
       if (rawData.data._id) { // 如果 rawData.data._id 存在
         imageId = rawData.data._id
@@ -120,7 +135,8 @@ export default defineComponent({
       onFormSubmit,
       handleFileChange,
       uploadCheck,
-      handleFileUploaded
+      handleFileUploaded,
+      uploadedData
     }
   }
 })

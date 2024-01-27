@@ -31,7 +31,7 @@ export interface PostProps {
   excerpt?: string;
   content?: string;
   image?: ImageProps | string;
-  createdAt: string;
+  createdAt?: string;
   column: string;
   author?: string | UserProps;
 }
