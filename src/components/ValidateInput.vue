@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, onMounted, reactive } from 'vue'
+import { PropType, defineComponent, onMounted, reactive, computed } from 'vue'
 import { emitter } from './ValidateForm.vue'
 
 const emailReg = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
@@ -30,7 +30,12 @@ export default defineComponent({
   inheritAttrs: false, // 禁止根元素继承
   setup (props, context) {
     const inputRef = reactive({
-      val: '',
+      val: computed({
+        get: () => props.modelValue || '',
+        set: val => {
+          context.emit('update:modelValue', val)
+        }
+      }),
       error: false,
       message: ''
     })
