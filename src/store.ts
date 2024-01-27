@@ -1,5 +1,5 @@
 import { createStore, Commit } from 'vuex'
-import axios from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
 
 export interface ResponseType<P =Record<string, never>> {
   code: number;
@@ -51,15 +51,13 @@ export interface GlobalDataProps {
   user: UserProps;
 }
 // 封装请求函数
-const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
-  const { data } = await axios.get(url)
-  commit(mutationName, data)
-  return data
-}
-const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
-  const { data } = await axios.post(url, payload)
-  commit(mutationName, data)
-  return data
+const asyncAndCommit = async(url: string, mutationName: string, commit: Commit, config: AxiosRequestConfig = { method: 'get' }, extraData?: any) => {
+  const { data } = await axios(url, config)
+  if (extraData) {
+    commit(mutationName, { data, extraData })
+  } else {
+    commit(mutationName, data)
+  }
 }
 
 const store = createStore<GlobalDataProps>({
@@ -83,6 +81,9 @@ const store = createStore<GlobalDataProps>({
     },
     fetchPosts (state, rawData) {
       state.posts = rawData.data.list
+    },
+    deletePost (state, { data }) {
+      state.posts = state.posts.filter(post => post._id === data._id)
     },
     setLoading (state, status) {
       state.loading = status
@@ -108,22 +109,25 @@ const store = createStore<GlobalDataProps>({
   },
   actions: { // 异步
     fetchColumns ({ commit }) { // context 具有和 store 相同的方法和属性
-      return getAndCommit('/columns', 'fetchColumns', commit)
+      return asyncAndCommit('/columns', 'fetchColumns', commit)
     },
     fetchColumn ({ commit }, cid) {
-      return getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
+      return asyncAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
     },
     fetchPosts ({ commit }, cid) {
-      return getAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit)
+      return asyncAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit)
     },
     fetchCurrentUser ({ commit }) {
-      return getAndCommit('/user/current', 'fetchCurrentUser', commit)
+      return asyncAndCommit('/user/current', 'fetchCurrentUser', commit)
     },
     login ({ commit }, payload) {
-      return postAndCommit('/user/login', 'login', commit, payload)
+      return asyncAndCommit('/user/login', 'login', commit, payload)
     },
     createPost ({ commit }, payload) {
-      return postAndCommit('/post', 'createPost', commit, payload)
+      return asyncAndCommit('/post', 'createPost', commit, payload)
+    },
+    deletePost ({ commit }, id) {
+      return asyncAndCommit(`/post/${id}`, 'deletePost', commit, { method: 'delete' })
     },
     loginAndFetch ({ dispatch }, loginData) {
       return dispatch('login', loginData).then(() => {
