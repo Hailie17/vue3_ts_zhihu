@@ -23,6 +23,7 @@
       <div class="m-3">
         <label class="form-label">文章详情：</label>
         <editor v-model="titleVal" :optios="editorOptions" ref="editorRef" @blur="checkEditor"></editor>  // 用ref获取对应的dom节点
+        <span v-if="!editorStatus.isValid" class="invalid-feedback mt-1">{{ editorStatus.message }}</span>
       </div>
       <template #submit>
         <button class="btn btn-primary btn-large">发表文章</button>
