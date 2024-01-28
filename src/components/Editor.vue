@@ -68,3 +68,8 @@ defineExpose({
   clear, getMDEInstance
 })
 </script>
+<style>
+.vue-easymde-editor .is-invalid {
+  border: 1px solid red;
+}
+</style>
