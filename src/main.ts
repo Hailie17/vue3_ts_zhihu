@@ -3,6 +3,7 @@ import router from './router'
 import store from './store'
 import App from './App.vue'
 import axios from 'axios'
+import 'easymde/dist/easymde.min.css'
 
 axios.defaults.baseURL = 'http://api.vikingship.xyz/api/'
 axios.interceptors.request.use(config => {
