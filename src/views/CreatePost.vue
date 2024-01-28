@@ -18,12 +18,11 @@
     <validate-form @form-submit="onFormSubmit">
       <div class="mb-3">
         <label class="form-label">文章标题：</label>
-        <editor v-model="titleVal" :optios="editorOptions" ref="editorRef"></editor>  // 用ref获取对应的dom节点
         <validate-input :rules="titleRules" v-model="titleVal" placeholder="请输入文章标题" type="text"></validate-input>
       </div>
       <div class="m-3">
         <label class="form-label">文章详情：</label>
-        <validate-input :rules="contentRules" v-model="contentVal" placeholder="请输入文章详情" rows="10" type="text" tag="textarea"></validate-input>
+        <editor v-model="titleVal" :optios="editorOptions" ref="editorRef" @blur="checkEditor"></editor>  // 用ref获取对应的dom节点
       </div>
       <template #submit>
         <button class="btn btn-primary btn-large">发表文章</button>
@@ -33,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, reactive } from 'vue'
 import EasyMDE, { Options } from 'easymde'
 import ValidateForm from '@/components/ValidateForm.vue'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
@@ -59,6 +58,10 @@ export default defineComponent({
     }
     const uploadedData = ref()
     const titleVal = ref('')
+    const editorStatus = reactive({
+      isValid: true,
+      message: ''
+    })
     const store = useStore<GlobalDataProps>()
     const router = useRouter()
     const route = useRoute() // useRoute()拿到和url相关的参数
@@ -69,9 +72,15 @@ export default defineComponent({
       { type: 'required', message: '文章标题不能为空' }
     ]
     const contentVal = ref('')
-    const contentRules: RulesProp = [
-      { type: 'required', message: '文章详情不能为空' }
-    ]
+    const checkEditor = () => {
+      if (contentVal.value.trim() === '') {
+        editorStatus.isValid = false
+        editorStatus.message = '文章详情不能为空'
+      } else {
+        editorStatus.isValid = true
+        editorStatus.message = ''
+      }
+    }
     onMounted(() => {
       if (isEditMode) {
         store.dispatch('fetchPost', route.query.id).then((rawData: ResponseType<PostProps>) => {
@@ -90,7 +99,8 @@ export default defineComponent({
       }
     }
     const onFormSubmit = (result: boolean) => {
-      if (result) {
+      checkEditor()
+      if (result && editorStatus.isValid) {
         const { column, _id } = store.state.user
         if (column) {
           const newPost: PostProps = {
@@ -142,14 +152,15 @@ export default defineComponent({
       titleRules,
       titleVal,
       contentVal,
-      contentRules,
       onFormSubmit,
       handleFileChange,
       uploadCheck,
       handleFileUploaded,
       uploadedData,
       editorOptions,
-      editorRef
+      editorRef,
+      checkEditor,
+      editorStatus
     }
   }
 })
