@@ -18,7 +18,7 @@
     <validate-form @form-submit="onFormSubmit">
       <div class="mb-3">
         <label class="form-label">文章标题：</label>
-        <textarea ref="textArea"></textarea>  // 用ref获取对应的dom节点
+        <editor v-model="titleVal" :optios="editorOptions"></editor>  // 用ref获取对应的dom节点
         <validate-input :rules="titleRules" v-model="titleVal" placeholder="请输入文章标题" type="text"></validate-input>
       </div>
       <div class="m-3">
@@ -34,9 +34,10 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import EasyMDE from 'easymde'
+import { Options } from 'easymde'
 import ValidateForm from '@/components/ValidateForm.vue'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
+import Editor from '@/components/Editor.vue'
 import Uploader from '@/components/Uploader.vue'
 import { GlobalDataProps, PostProps, ResponseType, ImageProps } from '@/store'
 import { useStore } from 'vuex'
@@ -47,15 +48,17 @@ import createMessage from '../components/createMessage'
 
 export default defineComponent({
   name: 'Login',
-  components: { ValidateInput, ValidateForm, Uploader },
+  components: { ValidateInput, ValidateForm, Uploader, Editor },
   setup () {
+    const editorOptions: Options = {
+      spellChecker: false
+    }
     const uploadedData = ref()
     const titleVal = ref('')
     const store = useStore<GlobalDataProps>()
     const router = useRouter()
     const route = useRoute() // useRoute()拿到和url相关的参数
     const isEditMode = !!route.query.id // !!转换为boolean
-    const textArea = ref<null | HTMLTextAreaElement>(null)
     let imageId = ''
     const titleRules: RulesProp = [
       { type: 'required', message: '文章标题不能为空' }
@@ -65,9 +68,6 @@ export default defineComponent({
       { type: 'required', message: '文章详情不能为空' }
     ]
     onMounted(() => {
-      if (textArea.value) {
-        const easyMDEInstance = new EasyMDE({ element: textArea.value })
-      }
       if (isEditMode) {
         store.dispatch('fetchPost', route.query.id).then((rawData: ResponseType<PostProps>) => {
           const currentPost = rawData.data
@@ -143,7 +143,7 @@ export default defineComponent({
       uploadCheck,
       handleFileUploaded,
       uploadedData,
-      textArea
+      editorOptions
     }
   }
 })
