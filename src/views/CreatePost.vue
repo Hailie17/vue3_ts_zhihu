@@ -18,7 +18,7 @@
     <validate-form @form-submit="onFormSubmit">
       <div class="mb-3">
         <label class="form-label">文章标题：</label>
-        <editor v-model="titleVal" :optios="editorOptions"></editor>  // 用ref获取对应的dom节点
+        <editor v-model="titleVal" :optios="editorOptions" ref="editorRef"></editor>  // 用ref获取对应的dom节点
         <validate-input :rules="titleRules" v-model="titleVal" placeholder="请输入文章标题" type="text"></validate-input>
       </div>
       <div class="m-3">
@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import { Options } from 'easymde'
+import EasyMDE, { Options } from 'easymde'
 import ValidateForm from '@/components/ValidateForm.vue'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import Editor from '@/components/Editor.vue'
@@ -46,6 +46,10 @@ import axios from 'axios'
 import { beforeUploadCheck } from '../helper'
 import createMessage from '../components/createMessage'
 
+interface EditorInstance {
+  clear: () => void;
+  getMDEInstance: () => EasyMDE | null;
+}
 export default defineComponent({
   name: 'Login',
   components: { ValidateInput, ValidateForm, Uploader, Editor },
@@ -59,6 +63,7 @@ export default defineComponent({
     const router = useRouter()
     const route = useRoute() // useRoute()拿到和url相关的参数
     const isEditMode = !!route.query.id // !!转换为boolean
+    const editorRef = ref<null | EditorInstance>()
     let imageId = ''
     const titleRules: RulesProp = [
       { type: 'required', message: '文章标题不能为空' }
@@ -143,7 +148,8 @@ export default defineComponent({
       uploadCheck,
       handleFileUploaded,
       uploadedData,
-      editorOptions
+      editorOptions,
+      editorRef
     }
   }
 })

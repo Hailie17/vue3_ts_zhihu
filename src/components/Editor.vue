@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import EasyMDE, { Options } from 'easymde'
-import { defineProps, defineEmits, ref, onMounted, onUnmounted } from 'vue'
+import { defineProps, defineEmits, ref, onMounted, onUnmounted, defineExpose } from 'vue'
 // 类型、属性、事件
 interface EditorProps {
   modalValue?: string;
@@ -19,7 +19,7 @@ interface EditorEvents {
 }
 const props = defineProps<EditorProps>()
 const emit = defineEmits<EditorEvents>()
-// 初始化数据
+// 初始化数据：1. 暴露对应的方法； 2. 结合页面实现验证功能
 const textArea = ref<null | HTMLTextAreaElement>(null)
 let easyMDEInstance: EasyMDE | null = null
 const innerValue = ref(props.modalValue || '')
@@ -55,5 +55,16 @@ onUnmounted(() => {
     easyMDEInstance.cleanup()
   }
   easyMDEInstance = null
+})
+const clear = () => {
+  if (easyMDEInstance) {
+    easyMDEInstance.value('')
+  }
+}
+const getMDEInstance = () => {
+  return easyMDEInstance
+}
+defineExpose({
+  clear, getMDEInstance
 })
 </script>
