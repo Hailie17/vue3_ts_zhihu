@@ -27,7 +27,7 @@ import { GlobalDataProps, ImageProps, UserProps, ResponseType, PostProps } from 
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import MarkdownIt from 'markdown-it'
+import { marked } from 'marked'
 import Modal from '@/components/Modal.vue'
 import createMessage from '@/components/createMessage'
 
@@ -40,14 +40,13 @@ export default defineComponent({
     const router = useRouter()
     const modalIsVisible = ref(false)
     const currentId = route.params.id
-    const md = new MarkdownIt()
     onMounted(() => {
       store.dispatch('fetchPost', currentId)
     })
     const currentPost = computed(() => store.getters.getCurrentPost(currentId))
     const currentHTML = computed(() => {
       if (currentPost.value && currentPost.value.content) { // 如果 currentPost.value 存在
-        return md.render(currentPost.value.content)
+        return marked.parse(currentPost.value.content)
       } else {
         return ''
       }
