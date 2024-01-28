@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import EasyMDE, { Options } from 'easymde'
-import { defineProps, defineEmits, ref, onMounted, onUnmounted, defineExpose } from 'vue'
+import { watch, defineProps, defineEmits, ref, onMounted, onUnmounted, defineExpose } from 'vue'
 // 类型、属性、事件
 interface EditorProps {
   modalValue?: string;
@@ -23,6 +23,13 @@ const emit = defineEmits<EditorEvents>()
 const textArea = ref<null | HTMLTextAreaElement>(null)
 let easyMDEInstance: EasyMDE | null = null
 const innerValue = ref(props.modalValue || '')
+watch(() => props.modalValue, (newVal) => {
+  if (easyMDEInstance) {
+    if (newVal !== innerValue.value) {
+      easyMDEInstance.value(newVal || '')
+    }
+  }
+})
 onMounted(() => {
   if (textArea.value) {
     // 组装options
