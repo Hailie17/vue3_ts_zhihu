@@ -132,6 +132,14 @@ const store = createStore<GlobalDataProps>({
         return asyncAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit, { method: 'get' }, cid)
       }
     },
+    fetchPost ({ state, commit }, id) {
+      const currentPost = state.posts.data[id]
+      if (!currentPost || !currentPost.content) {
+        return asyncAndCommit(`/posts/${id}`, 'fetchPost', commit)
+      } else {
+        return Promise.resolve({ data: currentPost })
+      }
+    },
     fetchCurrentUser ({ commit }) {
       return asyncAndCommit('/user/current', 'fetchCurrentUser', commit)
     },
